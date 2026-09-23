@@ -1,0 +1,29 @@
+{% extends 'dashboard/base_dashboard.html' %}
+{% block title %}Coupons | ShopEase{% endblock %}
+{% block dashboard_content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="fw-bold mb-0">Coupons</h2>
+    <a href="/admin/cart/coupon/add/" class="btn btn-primary"><i class="bi bi-plus-lg"></i> Add Coupon (Admin)</a>
+</div>
+<div class="border rounded-xl p-3">
+    <div class="table-responsive">
+        <table class="table align-middle">
+            <thead><tr><th>Code</th><th>Type</th><th>Amount</th><th>Min. Order</th><th>Used</th><th>Status</th></tr></thead>
+            <tbody>
+                {% for c in coupons %}
+                <tr>
+                    <td><span class="badge bg-primary">{{ c.code }}</span></td>
+                    <td>{{ c.get_discount_type_display }}</td>
+                    <td>{% if c.discount_type == 'percent' %}{{ c.amount }}%{% else %}${{ c.amount }}{% endif %}</td>
+                    <td>${{ c.minimum_order_amount }}</td>
+                    <td>{{ c.times_used }}{% if c.usage_limit %} / {{ c.usage_limit }}{% endif %}</td>
+                    <td>{% if c.is_active %}<span class="badge bg-success">Active</span>{% else %}<span class="badge bg-secondary">Inactive</span>{% endif %}</td>
+                </tr>
+                {% empty %}
+                <tr><td colspan="6" class="text-center text-muted">No coupons yet. Create one from the Django admin.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

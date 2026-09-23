@@ -1,0 +1,39 @@
+{% extends 'dashboard/base_dashboard.html' %}
+{% block title %}Manage Users | ShopEase{% endblock %}
+
+{% block dashboard_content %}
+<h2 class="fw-bold mb-4">Users</h2>
+
+<div class="border rounded-xl p-3">
+    <div class="table-responsive">
+        <table class="table align-middle">
+            <thead><tr><th>Username</th><th>Full Name</th><th>Email</th><th>Role</th><th>Joined</th><th>Status</th></tr></thead>
+            <tbody>
+                {% for u in page_obj %}
+                <tr>
+                    <td>{{ u.username }}</td>
+                    <td>{{ u.get_full_name|default:"—" }}</td>
+                    <td>{{ u.email }}</td>
+                    <td>
+                        {% if u.is_staff %}<span class="badge bg-primary">Admin</span>{% else %}<span class="badge bg-secondary">Customer</span>{% endif %}
+                    </td>
+                    <td>{{ u.date_joined|date:"M d, Y" }}</td>
+                    <td>{% if u.is_active %}<span class="badge bg-success">Active</span>{% else %}<span class="badge bg-danger">Disabled</span>{% endif %}</td>
+                </tr>
+                {% empty %}
+                <tr><td colspan="6" class="text-center text-muted">No users found.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% if page_obj.paginator.num_pages > 1 %}
+    <nav>
+        <ul class="pagination justify-content-center">
+            {% for num in page_obj.paginator.page_range %}
+            <li class="page-item {% if page_obj.number == num %}active{% endif %}"><a class="page-link" href="?page={{ num }}">{{ num }}</a></li>
+            {% endfor %}
+        </ul>
+    </nav>
+    {% endif %}
+</div>
+{% endblock %}

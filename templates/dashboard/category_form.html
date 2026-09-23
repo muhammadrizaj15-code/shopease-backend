@@ -1,0 +1,29 @@
+{% extends 'dashboard/base_dashboard.html' %}
+{% block title %}{{ title }} | ShopEase{% endblock %}
+
+{% block dashboard_content %}
+<h2 class="fw-bold mb-4">{{ title }}</h2>
+
+<div class="border rounded-xl p-4" style="max-width:600px;">
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="mb-3">
+            <label class="form-label">Category Name</label>
+            {{ form.name }}
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Description</label>
+            {{ form.description }}
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Image</label>
+            {{ form.image }}
+        </div>
+        <div class="form-check mb-3">
+            {{ form.is_active }} <label class="form-check-label">Active</label>
+        </div>
+        <button type="submit" class="btn btn-primary"><i class="bi bi-save"></i> Save Category</button>
+        <a href="{% url 'dashboard:category_list' %}" class="btn btn-outline-secondary">Cancel</a>
+    </form>
+</div>
+{% endblock %}

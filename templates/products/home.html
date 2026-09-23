@@ -1,0 +1,1490 @@
+{% extends 'base.html' %}
+{% load static i18n %}
+
+{% block title %}ShopEase | {% trans "Home" %}{% endblock %}
+
+{% block content %}
+
+<!-- ================= HERO SLIDER ================= -->
+<div id="heroSlider"
+     class="carousel slide hero-slider"
+     data-bs-ride="carousel"
+     data-bs-interval="30000">
+
+    <!-- INDICATORS -->
+    <div class="carousel-indicators">
+
+        <button type="button"
+                data-bs-target="#heroSlider"
+                data-bs-slide-to="0"
+                class="active"
+                aria-current="true"
+                aria-label="Slide 1"></button>
+
+        <button type="button"
+                data-bs-target="#heroSlider"
+                data-bs-slide-to="1"
+                aria-label="Slide 2"></button>
+
+        <button type="button"
+                data-bs-target="#heroSlider"
+                data-bs-slide-to="2"
+                aria-label="Slide 3"></button>
+
+    </div>
+
+    <div class="carousel-inner">
+
+        <!-- ================= 1-SLIDE (centered / featured product) ================= -->
+        <div class="carousel-item active hero-featured-slide">
+
+            <div class="container">
+
+                <div class="hero-centered">
+
+                    <span class="hero-badge sale-badge">
+                        🔥 {% trans "Special Offers" %}
+                    </span>
+
+                    <h1 class="hero-title-2line">
+                        {% trans "Big Discounts" %}<br>
+                        <span class="accent">{% trans "Just For You" %}</span>
+                    </h1>
+
+                    <p>
+                        {% trans "Save more on our most popular products with amazing discounts." %}
+                    </p>
+
+                    <div class="hero-cta-row">
+
+                        <a href="{% url 'products:product_list' %}"
+                           class="hero-btn">
+                            <i class="bi bi-lightning-charge-fill"></i>
+                            {% trans "Shop Discounts" %}
+                        </a>
+
+                        <span class="hero-mini-note">
+                            <i class="bi bi-truck"></i>
+                            {% trans "Free Express Delivery" %}
+                        </span>
+
+                    </div>
+
+                </div>
+
+                {% with featured=flash_sale_products.first %}
+
+                {% if featured %}
+
+                <div class="hero-featured-product">
+
+                    <div class="hero-featured-image">
+
+                        <span class="product-label sale">
+                            SALE {% if featured.discount_percent %}-{{ featured.discount_percent }}%{% endif %}
+                        </span>
+
+                        {% if featured.image %}
+                            <img src="{{ featured.image.url }}" alt="{{ featured.name }}">
+                        {% else %}
+                            <div class="product-no-image"><i class="bi bi-image"></i></div>
+                        {% endif %}
+
+                    </div>
+
+                    <a href="{{ featured.get_absolute_url }}" class="hero-featured-bar">
+
+                        <div class="hero-featured-info">
+                            <div class="hero-featured-label">{% trans "FEATURED ITEM" %}</div>
+                            <div class="hero-featured-name">{{ featured.name|truncatechars:32 }}</div>
+                        </div>
+
+                        <div class="hero-price">
+                            {% if featured.discount_price %}
+                                <span class="old-price">${{ featured.price }}</span>
+                                <strong>${{ featured.discount_price }}</strong>
+                            {% else %}
+                                <strong>${{ featured.current_price }}</strong>
+                            {% endif %}
+                        </div>
+
+                    </a>
+
+                </div>
+
+                {% else %}
+
+                    <div class="no-products">
+                        {% trans "No discounted products yet." %}
+                    </div>
+
+                {% endif %}
+
+                {% endwith %}
+
+            </div>
+
+        </div>
+
+
+        <!-- ================= 2-SLIDE ================= -->
+        <div class="carousel-item">
+
+            <div class="container">
+
+                <div class="hero-content">
+
+                    <div class="hero-text">
+
+                        <span class="hero-badge new-badge">
+                            ✨ {% trans "New Arrivals" %}
+                        </span>
+
+                        <h1>
+                            {% trans "Discover Our Latest Products" %}
+                        </h1>
+
+                        <p>
+                            {% trans "Fresh products added recently. Be the first to discover them." %}
+                        </p>
+
+                        <a href="{% url 'products:product_list' %}"
+                           class="hero-btn">
+
+                            <i class="bi bi-stars"></i>
+
+                            {% trans "Explore New Products" %}
+
+                        </a>
+
+                    </div>
+
+                    <div class="hero-products">
+
+                        {% for product in new_arrivals|slice:":3" %}
+
+                        <a href="{{ product.get_absolute_url }}"
+                           class="hero-product">
+
+                            <span class="product-label new">
+                                NEW
+                            </span>
+
+                            {% if product.image %}
+
+                                <img src="{{ product.image.url }}"
+                                     alt="{{ product.name }}">
+
+                            {% else %}
+
+                                <div class="product-no-image">
+                                    <i class="bi bi-image"></i>
+                                </div>
+
+                            {% endif %}
+
+                            <div class="hero-product-title">
+                                {{ product.name|truncatechars:20 }}
+                            </div>
+
+                            <div class="hero-price">
+
+                                <strong>
+                                    ${{ product.current_price }}
+                                </strong>
+
+                            </div>
+
+                        </a>
+
+                        {% empty %}
+
+                            <div class="no-products">
+                                {% trans "No new products yet." %}
+                            </div>
+
+                        {% endfor %}
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- ================= 3-SLIDE ================= -->
+        <div class="carousel-item">
+
+            <div class="container">
+
+                <div class="hero-content">
+
+                    <div class="hero-text">
+
+                        <span class="hero-badge secure-badge">
+
+                            <i class="bi bi-shield-check"></i>
+
+                            {% trans "Secure Payments" %}
+
+                        </span>
+
+                        <h1>
+                            {% trans "Shop With Confidence, Every Time" %}
+                        </h1>
+
+                        <p>
+                            {% trans "Easy returns, secure checkout, and dedicated customer support." %}
+                        </p>
+
+                        <a href="{% url 'products:category_list' %}"
+                           class="hero-btn">
+
+                            <i class="bi bi-grid"></i>
+
+                            {% trans "Browse Categories" %}
+
+                        </a>
+
+                    </div>
+
+                    <div class="hero-icons">
+
+                        <i class="bi bi-phone"></i>
+                        <i class="bi bi-laptop"></i>
+                        <i class="bi bi-headphones"></i>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- PREVIOUS -->
+    <button class="carousel-control-prev"
+            type="button"
+            data-bs-target="#heroSlider"
+            data-bs-slide="prev">
+
+        <span class="carousel-control-prev-icon"></span>
+
+        <span class="visually-hidden">
+            Previous
+        </span>
+
+    </button>
+
+
+    <!-- NEXT -->
+    <button class="carousel-control-next"
+            type="button"
+            data-bs-target="#heroSlider"
+            data-bs-slide="next">
+
+        <span class="carousel-control-next-icon"></span>
+
+        <span class="visually-hidden">
+            Next
+        </span>
+
+    </button>
+
+</div>
+
+<!-- ================= QUICK CATEGORY STRIP ================= -->
+{% if categories %}
+<div class="quick-cat-strip">
+    <div class="container">
+        <div class="quick-cat-row">
+            {% for cat in categories|slice:":4" %}
+            <a href="{% url 'products:product_list_by_category' cat.slug %}" class="quick-cat-pill">
+                <span class="quick-cat-icon">
+                    {% if cat.image %}
+                        <img src="{{ cat.image.url }}" alt="{{ cat.name }}">
+                    {% else %}
+                        <i class="bi bi-grid-fill"></i>
+                    {% endif %}
+                </span>
+                <span>{{ cat.name }}</span>
+            </a>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endif %}
+
+
+<!-- ================= FLASH SALE ================= -->
+
+{% if flash_sale_products %}
+
+<section class="py-5">
+
+    <div class="container" data-aos="fade-up">
+
+        <div class="flash-sale-banner d-flex flex-wrap justify-content-between align-items-center mb-4">
+
+            <div>
+
+                <h3 class="fw-bold mb-1">
+
+                    <i class="bi bi-lightning-charge-fill"></i>
+
+                    {% trans "Flash Sale" %}
+
+                </h3>
+
+                <p class="mb-0 opacity-75">
+
+                    {% trans "Grab these deals before time runs out!" %}
+
+                </p>
+
+            </div>
+
+
+            <div class="d-flex gap-2 flash-countdown"
+                 data-end="{% now 'Y-m-d' %}T23:59:59">
+
+                <div class="countdown-box">
+                    <span class="num cd-days">00</span>
+                    <small>{% trans "Days" %}</small>
+                </div>
+
+                <div class="countdown-box">
+                    <span class="num cd-hours">00</span>
+                    <small>{% trans "Hrs" %}</small>
+                </div>
+
+                <div class="countdown-box">
+                    <span class="num cd-mins">00</span>
+                    <small>{% trans "Min" %}</small>
+                </div>
+
+                <div class="countdown-box">
+                    <span class="num cd-secs">00</span>
+                    <small>{% trans "Sec" %}</small>
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="row g-3">
+
+            {% for product in flash_sale_products %}
+
+                {% include 'products/includes/product_card.html' %}
+
+            {% endfor %}
+
+        </div>
+
+    </div>
+
+</section>
+
+{% endif %}
+
+
+<!-- ================= CATEGORIES ================= -->
+
+<section class="py-5">
+
+    <div class="container" data-aos="fade-up">
+
+        <h2 class="section-title">
+            {% trans "Shop by Category" %}
+        </h2>
+
+        <div class="row g-3">
+
+            {% for cat in categories %}
+
+            <div class="col-6 col-md-3">
+
+                <a href="{{ cat.get_absolute_url }}"
+                   class="category-card d-block">
+
+                    {% if cat.logo %}
+
+                        <img src="{{ cat.logo.url }}"
+                             alt="{{ cat.name }}"
+                             class="w-100">
+
+                    {% else %}
+
+                        <div class="category-placeholder">
+                            <i class="bi bi-grid"></i>
+                        </div>
+
+                    {% endif %}
+
+                    <div class="overlay">
+                        {{ cat.name }}
+                    </div>
+
+                </a>
+
+            </div>
+
+            {% empty %}
+
+            <div class="col-12">
+
+                <p class="text-muted">
+                    {% trans "No categories available yet. Add some from the admin dashboard." %}
+                </p>
+
+            </div>
+
+            {% endfor %}
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- ================= FEATURED PRODUCTS ================= -->
+
+<section class="py-5 bg-light">
+
+    <div class="container" data-aos="fade-up">
+
+        <div class="d-flex justify-content-between align-items-center">
+
+            <h2 class="section-title">
+                {% trans "Featured Products" %}
+            </h2>
+
+            <a href="{% url 'products:product_list' %}"
+               class="text-primary fw-semibold">
+
+                {% trans "View All" %}
+
+                <i class="bi bi-arrow-right"></i>
+
+            </a>
+
+        </div>
+
+
+        <div class="row g-3">
+
+            {% for product in featured_products %}
+
+                {% include 'products/includes/product_card.html' %}
+
+            {% empty %}
+
+                <p class="text-muted">
+                    {% trans "No featured products yet." %}
+                </p>
+
+            {% endfor %}
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- ================= NEW ARRIVALS ================= -->
+
+<section class="py-5">
+
+    <div class="container" data-aos="fade-up">
+
+        <h2 class="section-title">
+            {% trans "New Arrivals" %}
+        </h2>
+
+        <div class="row g-3">
+
+            {% for product in new_arrivals %}
+
+                {% include 'products/includes/product_card.html' %}
+
+            {% empty %}
+
+                <p class="text-muted">
+                    {% trans "No new arrivals yet." %}
+                </p>
+
+            {% endfor %}
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- ================= BEST SELLERS ================= -->
+
+<section class="py-5 bg-light">
+
+    <div class="container" data-aos="fade-up">
+
+        <h2 class="section-title">
+            {% trans "Best Sellers" %}
+        </h2>
+
+        <div class="row g-3">
+
+            {% for product in best_sellers %}
+
+                {% include 'products/includes/product_card.html' %}
+
+            {% empty %}
+
+                <p class="text-muted">
+                    {% trans "No best sellers yet." %}
+                </p>
+
+            {% endfor %}
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- ================= RECENTLY VIEWED ================= -->
+
+{% if recently_viewed %}
+
+<section class="py-5">
+
+    <div class="container" data-aos="fade-up">
+
+        <h2 class="section-title">
+            {% trans "Recently Viewed" %}
+        </h2>
+
+        <div class="row g-3">
+
+            {% for product in recently_viewed %}
+
+                {% include 'products/includes/product_card.html' %}
+
+            {% endfor %}
+
+        </div>
+
+    </div>
+
+</section>
+
+{% endif %}
+
+
+<!-- ================= BRAND LOGOS ================= -->
+
+{% if brands %}
+
+<section class="py-5 bg-light">
+
+    <div class="container" data-aos="fade-up">
+
+        <h2 class="section-title">
+            {% trans "Popular Brands" %}
+        </h2>
+
+        <div class="row g-3">
+
+            {% for brand in brands %}
+
+            <div class="col-6 col-md-2">
+
+                <div class="brand-logo-box">
+
+                    {% if brand.logo %}
+
+                        <img src="{{ brand.logo.url }}"
+                             alt="{{ brand.name }}">
+
+                    {% else %}
+
+                        <span class="fw-semibold">
+                            {{ brand.name }}
+                        </span>
+
+                    {% endif %}
+
+                </div>
+
+            </div>
+
+            {% endfor %}
+
+        </div>
+
+    </div>
+
+</section>
+
+{% endif %}
+
+
+<!-- ================= CUSTOMER REVIEWS ================= -->
+
+<section class="py-5">
+
+    <div class="container" data-aos="fade-up">
+
+        <h2 class="section-title">
+            {% trans "What Our Customers Say" %}
+        </h2>
+
+        <div class="row g-4">
+
+            {% for review in latest_reviews %}
+
+            <div class="col-md-4">
+
+                <div class="review-card">
+
+                    <div class="rating-stars mb-2">
+
+                        {% for i in "12345" %}
+
+                            {% if forloop.counter <= review.rating %}
+
+                                <i class="bi bi-star-fill"></i>
+
+                            {% else %}
+
+                                <i class="bi bi-star"></i>
+
+                            {% endif %}
+
+                        {% endfor %}
+
+                    </div>
+
+
+                    <p class="fst-italic">
+                        "{{ review.comment|truncatewords:25 }}"
+                    </p>
+
+
+                    <p class="fw-semibold mb-0">
+                        — {{ review.user.username }}
+                    </p>
+
+
+                    <small class="text-muted">
+
+                        {% trans "on" %}
+
+                        {{ review.product.name }}
+
+                    </small>
+
+                </div>
+
+            </div>
+
+            {% empty %}
+
+            <p class="text-muted">
+                {% trans "No reviews yet — be the first to review a product!" %}
+            </p>
+
+            {% endfor %}
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- ================= INSTAGRAM GALLERY ================= -->
+
+<section class="py-5 bg-light">
+
+    <div class="container" data-aos="fade-up">
+
+        <h2 class="section-title">
+
+            <i class="bi bi-instagram"></i>
+
+            {% trans "Follow Us" %} @shopease
+
+        </h2>
+
+
+        <div class="row g-2">
+
+            {% for i in "123456" %}
+
+            <div class="col-6 col-md-2">
+
+                <div class="ratio ratio-1x1 rounded-xl overflow-hidden">
+
+                    <img
+                        src="https://placehold.co/300x300/4f46e5/ffffff?text=%40shopease"
+                        class="w-100 h-100"
+                        style="object-fit: cover;"
+                        alt="Instagram post">
+
+                </div>
+
+            </div>
+
+            {% endfor %}
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- ========================================================= -->
+<!-- HERO PRODUCT CSS -->
+<!-- ========================================================= -->
+
+<style>
+
+.hero-slider {
+    background: linear-gradient(
+        110deg,
+        #4f46e5 0%,
+        #7c3aed 50%,
+        #d946a6 100%
+    );
+
+    color: white;
+    overflow: hidden;
+}
+
+
+/* ================= CAROUSEL FIX ================= */
+
+.hero-slider .carousel-inner {
+    position: relative;
+    width: 100%;
+    overflow: hidden;
+}
+
+
+/*
+   MUHIM:
+   Faqat active slide ko'rinadi.
+   Shu qism yozuvlarning bir-biriga qo'shilib
+   ketishini to'xtatadi.
+*/
+
+.hero-slider .carousel-item {
+    position: relative;
+    display: none;
+    float: left;
+    width: 100%;
+    margin-right: -100%;
+    backface-visibility: hidden;
+    min-height: 440px;
+}
+
+.hero-slider .carousel-item.active {
+    display: block;
+}
+
+
+/* Bootstrap o'tish animatsiyasi */
+
+.hero-slider .carousel-item-next,
+.hero-slider .carousel-item-prev {
+    display: block;
+}
+
+.hero-slider .carousel-item-next:not(.carousel-item-start),
+.hero-slider .active.carousel-item-end {
+    transform: translateX(100%);
+}
+
+.hero-slider .carousel-item-prev:not(.carousel-item-end),
+.hero-slider .active.carousel-item-start {
+    transform: translateX(-100%);
+}
+
+.hero-slider .carousel-item-next.carousel-item-start,
+.hero-slider .carousel-item-prev.carousel-item-end {
+    transform: translateX(0);
+}
+
+.hero-slider .carousel-item-next,
+.hero-slider .carousel-item-prev,
+.hero-slider .carousel-item.active {
+    transition: transform .6s ease-in-out;
+}
+
+
+/* ================= HERO CONTENT ================= */
+
+.hero-content {
+    min-height: 440px;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 40px;
+
+    padding: 45px 70px;
+}
+
+
+/* ================= LEFT TEXT ================= */
+
+.hero-text {
+    width: 45%;
+
+    position: relative;
+    z-index: 5;
+}
+
+.hero-text h1 {
+    font-size: 44px;
+    line-height: 1.1;
+    font-weight: 800;
+
+    margin: 18px 0;
+}
+
+.hero-text p {
+    font-size: 18px;
+    line-height: 1.6;
+
+    color: rgba(255,255,255,.78);
+
+    margin-bottom: 28px;
+}
+
+
+/* ================= BADGE ================= */
+
+.hero-badge {
+    display: inline-flex;
+
+    padding: 7px 13px;
+
+    border-radius: 8px;
+
+    font-size: 13px;
+    font-weight: 700;
+
+    background: white;
+}
+
+.sale-badge {
+    color: #ef4444;
+}
+
+.new-badge {
+    color: #16a34a;
+}
+
+.secure-badge {
+    color: #ef4444;
+}
+
+
+/* ================= BUTTON ================= */
+
+.hero-btn {
+    display: inline-flex;
+
+    align-items: center;
+
+    gap: 8px;
+
+    padding: 14px 25px;
+
+    background: #f59e0b;
+
+    color: #111827;
+
+    border-radius: 30px;
+
+    font-weight: 700;
+
+    text-decoration: none;
+
+    transition: .25s;
+}
+
+.hero-btn:hover {
+    transform: translateY(-3px);
+
+    background: #fbbf24;
+
+    color: #111827;
+}
+
+
+/* ================= FEATURED / CENTERED HERO SLIDE ================= */
+
+.hero-featured-slide {
+    min-height: 640px;
+}
+
+.hero-featured-slide .container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 44px;
+    padding-bottom: 36px;
+}
+
+.hero-centered {
+    text-align: center;
+    max-width: 640px;
+    margin: 0 auto;
+}
+
+.hero-title-2line {
+    font-weight: 800;
+    font-size: 2.6rem;
+    line-height: 1.18;
+    margin: 14px 0 12px;
+}
+
+.hero-title-2line .accent {
+    color: #fbbf24;
+}
+
+.hero-cta-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    flex-wrap: wrap;
+    margin-top: 22px;
+}
+
+.hero-mini-note {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: .9rem;
+    opacity: .92;
+    font-weight: 600;
+}
+
+.hero-featured-product {
+    margin-top: 30px;
+    width: 100%;
+    max-width: 480px;
+}
+
+.hero-featured-image {
+    position: relative;
+    background: #0f0f14;
+    border-radius: 18px;
+    overflow: hidden;
+    min-height: 220px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 20px 45px rgba(0,0,0,.35);
+}
+
+.hero-featured-image img {
+    width: 100%;
+    height: 220px;
+    object-fit: contain;
+    display: block;
+}
+
+.hero-featured-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+    margin-top: -16px;
+    position: relative;
+    z-index: 2;
+    background: rgba(255,255,255,.16);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255,255,255,.25);
+    border-radius: 16px;
+    padding: 14px 18px;
+    text-decoration: none;
+    color: #fff;
+    max-width: 92%;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.hero-featured-label {
+    font-size: .65rem;
+    letter-spacing: .06em;
+    opacity: .8;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+.hero-featured-name {
+    font-weight: 700;
+    font-size: .95rem;
+    color: #fff;
+}
+
+.hero-featured-bar .hero-price {
+    margin-top: 0;
+    justify-content: flex-end;
+}
+
+.hero-featured-bar .hero-price strong {
+    color: #fbbf24;
+    font-size: 17px;
+}
+
+.hero-featured-bar .old-price {
+    color: rgba(255,255,255,.6);
+}
+
+@media (max-width: 767px) {
+    .hero-featured-slide { min-height: 600px; }
+    .hero-title-2line { font-size: 1.9rem; }
+    .hero-featured-image, .hero-featured-image img { height: 190px; }
+    .hero-featured-bar { flex-direction: column; align-items: flex-start; gap: 6px; }
+    .hero-featured-bar .hero-price { justify-content: flex-start; }
+}
+
+
+/* ================= PRODUCT GRID ================= */
+
+.hero-products {
+    width: 52%;
+
+    display: flex;
+
+    flex-wrap: wrap;
+
+    gap: 18px;
+
+    align-items: flex-start;
+}
+
+
+/* ================= PRODUCT CARD ================= */
+
+.hero-product {
+    position: relative;
+
+    display: block;
+
+    width: 150px;
+
+    flex: 0 0 150px;
+
+    background: rgba(255,255,255,.97);
+
+    border-radius: 18px;
+
+    padding: 12px;
+
+    text-decoration: none;
+
+    color: #111827;
+
+    box-shadow:
+        0 15px 35px rgba(0,0,0,.20);
+
+    transition: .3s;
+
+    overflow: hidden;
+}
+
+.hero-product:hover {
+    transform: translateY(-10px) scale(1.02);
+
+    box-shadow:
+        0 22px 45px rgba(0,0,0,.28);
+
+    color: #111827;
+}
+
+
+/* ================= IMAGE ================= */
+
+.hero-product img {
+    width: 100%;
+
+    height: 130px;
+
+    object-fit: contain;
+
+    border-radius: 12px;
+
+    background: #f8fafc;
+
+    display: block;
+}
+
+.product-no-image {
+    width: 100%;
+
+    height: 130px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    background: #f1f5f9;
+
+    border-radius: 12px;
+
+    color: #94a3b8;
+
+    font-size: 45px;
+}
+
+
+/* ================= SALE / NEW LABEL ================= */
+
+.product-label {
+    position: absolute;
+
+    top: 10px;
+
+    left: 10px;
+
+    z-index: 10;
+
+    padding: 5px 9px;
+
+    border-radius: 7px;
+
+    color: white;
+
+    font-size: 11px;
+
+    font-weight: 800;
+}
+
+.product-label.sale {
+    background: #ef4444;
+}
+
+.product-label.new {
+    background: #22c55e;
+}
+
+
+/* ================= PRODUCT NAME ================= */
+
+.hero-product-title {
+    margin-top: 12px;
+
+    font-size: 14px;
+
+    font-weight: 700;
+
+    white-space: nowrap;
+
+    overflow: hidden;
+
+    text-overflow: ellipsis;
+}
+
+
+/* ================= PRICE ================= */
+
+.hero-price {
+    margin-top: 6px;
+
+    display: flex;
+
+    align-items: baseline;
+
+    flex-wrap: wrap;
+
+    gap: 5px;
+
+    max-width: 100%;
+}
+
+.hero-price strong {
+    color: #4f46e5;
+
+    font-size: 15px;
+
+    font-weight: 800;
+
+    white-space: nowrap;
+}
+
+.old-price {
+    color: #9ca3af;
+
+    text-decoration: line-through;
+
+    font-size: 11px;
+
+    white-space: nowrap;
+}
+
+
+/* ================= EMPTY ================= */
+
+.no-products {
+    color: white;
+
+    font-size: 18px;
+
+    font-weight: 600;
+
+    padding: 30px;
+}
+
+
+/* ================= SECURE ICONS ================= */
+
+.hero-icons {
+    width: 50%;
+
+    display: flex;
+
+    justify-content: center;
+
+    align-items: center;
+
+    gap: 25px;
+
+    font-size: 100px;
+
+    color: rgba(255,255,255,.35);
+}
+
+
+/* ================= ARROWS ================= */
+
+.hero-slider .carousel-control-prev,
+.hero-slider .carousel-control-next {
+    width: 8%;
+
+    z-index: 20;
+}
+
+.hero-slider .carousel-indicators {
+    bottom: 10px;
+
+    z-index: 30;
+}
+
+.hero-slider .carousel-indicators button {
+    width: 32px;
+
+    height: 3px;
+
+    margin: 0 3px;
+}
+
+
+/* ========================================================= */
+/* TABLET */
+/* ========================================================= */
+
+@media (max-width: 991px) {
+
+    .hero-slider .carousel-item {
+        min-height: 500px;
+    }
+
+    .hero-content {
+        min-height: 500px;
+
+        padding: 40px 45px;
+
+        gap: 25px;
+    }
+
+    .hero-text {
+        width: 43%;
+    }
+
+    .hero-text h1 {
+        font-size: 32px;
+    }
+
+    .hero-text p {
+        font-size: 15px;
+    }
+
+    .hero-products {
+        width: 57%;
+
+        gap: 10px;
+    }
+
+    .hero-product {
+        min-height: 230px;
+
+        padding: 8px;
+    }
+
+    .hero-product img,
+    .product-no-image {
+        height: 125px;
+    }
+
+    .hero-icons {
+        font-size: 75px;
+    }
+}
+
+
+/* ========================================================= */
+/* MOBILE */
+/* ========================================================= */
+
+@media (max-width: 767px) {
+
+    .hero-slider .carousel-item {
+        min-height: 650px;
+    }
+
+    .hero-content {
+        min-height: 650px;
+
+        flex-direction: column;
+
+        justify-content: center;
+
+        padding: 35px 25px 60px;
+    }
+
+    .hero-text {
+        width: 100%;
+
+        text-align: center;
+    }
+
+    .hero-text h1 {
+        font-size: 30px;
+    }
+
+    .hero-text p {
+        font-size: 14px;
+    }
+
+    .hero-products {
+        width: 100%;
+
+        gap: 8px;
+    }
+
+    .hero-product {
+        min-height: 190px;
+
+        padding: 7px;
+    }
+
+    .hero-product img,
+    .product-no-image {
+        height: 100px;
+    }
+
+    .hero-product-title {
+        font-size: 11px;
+    }
+
+    .hero-price strong {
+        font-size: 13px;
+    }
+
+    .hero-icons {
+        width: 100%;
+
+        font-size: 65px;
+    }
+}
+
+
+/* ========================================================= */
+/* SMALL MOBILE */
+/* ========================================================= */
+
+@media (max-width: 450px) {
+
+    .hero-content {
+        padding-left: 15px;
+        padding-right: 15px;
+    }
+
+    .hero-text h1 {
+        font-size: 25px;
+    }
+
+    .hero-product {
+        min-height: 170px;
+    }
+
+    .hero-product img,
+    .product-no-image {
+        height: 85px;
+    }
+
+    .product-label {
+        font-size: 9px;
+
+        padding: 4px 6px;
+    }
+}
+
+</style>
+
+
+<!-- ================= CAROUSEL JS ================= -->
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+    const slider = document.getElementById("heroSlider");
+
+    if (!slider) return;
+
+    /*
+     * Bootstrap carousel:
+     * 30 sekund = 30000 millisekund
+     */
+
+    if (typeof bootstrap !== "undefined") {
+
+        const carousel = bootstrap.Carousel.getOrCreateInstance(
+            slider,
+            {
+                interval: 30000,
+                ride: "carousel",
+                pause: false,
+                wrap: true
+            }
+        );
+
+        carousel.cycle();
+    }
+
+});
+</script>
+
+{% endblock %}

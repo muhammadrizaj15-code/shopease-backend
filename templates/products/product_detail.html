@@ -1,0 +1,1695 @@
+{% extends 'base.html' %}
+{% load i18n %}
+
+{% block title %}{{ product.name }} | ShopEase{% endblock %}
+
+{% block content %}
+
+<div class="container py-5">
+
+    <!-- ================= BREADCRUMB ================= -->
+
+    <nav aria-label="breadcrumb">
+
+        <ol class="breadcrumb small">
+
+            <li class="breadcrumb-item">
+
+                <a href="{% url 'products:home' %}">
+                    {% trans "Home" %}
+                </a>
+
+            </li>
+
+            <li class="breadcrumb-item">
+
+                <a href="{{ product.category.get_absolute_url }}">
+                    {{ product.category.name }}
+                </a>
+
+            </li>
+
+            <li class="breadcrumb-item active">
+                {{ product.name }}
+            </li>
+
+        </ol>
+
+    </nav>
+
+
+    <div class="row g-5">
+
+
+        <!-- ================================================= -->
+        <!-- PRODUCT IMAGE -->
+        <!-- ================================================= -->
+
+        <div class="col-lg-5">
+
+            <div class="product-image-box">
+
+                {% if product.image %}
+
+                    <img
+                        id="mainProductImage"
+                        src="{{ product.image.url }}"
+                        class="img-fluid"
+                        alt="{{ product.name }}"
+                    >
+
+                {% else %}
+
+                    <img
+                        id="mainProductImage"
+                        src="https://placehold.co/600x600?text={{ product.name|urlencode }}"
+                        class="img-fluid"
+                        alt="{{ product.name }}"
+                    >
+
+                {% endif %}
+
+            </div>
+
+
+            <!-- ================= GALLERY ================= -->
+
+            <div class="d-flex gap-2 flex-wrap mt-3">
+
+                {% if product.image %}
+
+                    <img
+                        src="{{ product.image.url }}"
+                        data-full="{{ product.image.url }}"
+                        class="thumbnail-img"
+                        alt="{{ product.name }}"
+                    >
+
+                {% endif %}
+
+
+                {% for img in product.gallery_images.all %}
+
+                    <img
+                        src="{{ img.image.url }}"
+                        data-full="{{ img.image.url }}"
+                        class="thumbnail-img"
+                        alt="{{ product.name }}"
+                    >
+
+                {% endfor %}
+
+            </div>
+
+
+            <!-- ================= SHARE ================= -->
+
+            <div class="d-flex gap-2 mt-4">
+
+                <span class="small text-muted align-self-center">
+                    {% trans "Share:" %}
+                </span>
+
+                <a
+                    href="https://t.me/share/url?url={{ request.build_absolute_uri|urlencode }}"
+                    target="_blank"
+                    class="social-icon bg-primary"
+                >
+                    <i class="bi bi-telegram"></i>
+                </a>
+
+                <a
+                    href="https://www.facebook.com/sharer/sharer.php?u={{ request.build_absolute_uri|urlencode }}"
+                    target="_blank"
+                    class="social-icon bg-primary"
+                >
+                    <i class="bi bi-facebook"></i>
+                </a>
+
+                <a
+                    href="https://twitter.com/intent/tweet?url={{ request.build_absolute_uri|urlencode }}"
+                    target="_blank"
+                    class="social-icon bg-primary"
+                >
+                    <i class="bi bi-twitter-x"></i>
+                </a>
+
+            </div>
+
+        </div>
+
+
+        <!-- ================================================= -->
+        <!-- PRODUCT INFO -->
+        <!-- ================================================= -->
+
+        <div class="col-lg-7">
+
+
+            <div class="d-flex justify-content-between align-items-start">
+
+                <h2 class="fw-bold mb-2">
+                    {{ product.name }}
+                </h2>
+
+
+                {% if user.is_authenticated %}
+
+                    <form
+                        action="{% url 'products:wishlist_toggle' product.id %}"
+                        method="post"
+                    >
+
+                        {% csrf_token %}
+
+                        <input
+                            type="hidden"
+                            name="next"
+                            value="{{ request.path }}"
+                        >
+
+                        <button
+                            type="submit"
+                            class="btn btn-outline-danger rounded-circle"
+                        >
+
+                            <i class="bi
+                                {% if in_wishlist %}
+                                    bi-heart-fill
+                                {% else %}
+                                    bi-heart
+                                {% endif %}
+                            "></i>
+
+                        </button>
+
+                    </form>
+
+                {% endif %}
+
+            </div>
+
+
+            <!-- ================= BRAND ================= -->
+
+            {% if product.brand %}
+
+                <p class="text-muted">
+
+                    {% trans "Brand" %}:
+
+                    <a
+                        href="{% url 'products:product_list' %}?brand={{ product.brand.slug }}"
+                    >
+                        {{ product.brand.name }}
+                    </a>
+
+                </p>
+
+            {% endif %}
+
+
+            <!-- ================= SKU ================= -->
+
+            <p
+                id="productSku"
+                class="text-muted small"
+            >
+                SKU: {{ product.sku }}
+            </p>
+
+
+            <!-- ================= RATING ================= -->
+
+            <div class="rating-stars mb-3">
+
+                {% for i in "12345" %}
+
+                    {% if forloop.counter <= product.average_rating %}
+
+                        <i class="bi bi-star-fill"></i>
+
+                    {% else %}
+
+                        <i class="bi bi-star"></i>
+
+                    {% endif %}
+
+                {% endfor %}
+
+                <span class="text-muted small ms-2">
+
+                    {{ product.review_count }}
+                    {% trans "reviews" %}
+
+                </span>
+
+            </div>
+
+
+            <!-- ================================================= -->
+            <!-- PRICE -->
+            <!-- ================================================= -->
+
+            <div class="d-flex align-items-center gap-3 mb-3">
+
+                <span
+                    id="productPrice"
+                    class="price-current fs-3 fw-bold"
+                >
+                    ${{ product.current_price }}
+                </span>
+
+
+                <span
+                    id="productOldPrice"
+                    class="price-old fs-5
+                    {% if not product.is_on_sale %}d-none{% endif %}"
+                >
+                    ${{ product.price }}
+                </span>
+
+
+                <span
+                    id="productDiscount"
+                    class="badge bg-danger
+                    {% if not product.is_on_sale %}d-none{% endif %}"
+                >
+
+                    {% trans "Discount" %}
+
+                    <span id="discountPercent">
+                        {{ product.discount_percent }}
+                    </span>%
+
+                </span>
+
+            </div>
+
+
+            <!-- ================= DESCRIPTION ================= -->
+
+            {% if product.short_description %}
+
+                <p class="text-muted">
+                    {{ product.short_description }}
+                </p>
+
+            {% endif %}
+
+
+            {% if product.description %}
+
+                <p>
+                    {{ product.description }}
+                </p>
+
+            {% endif %}
+
+
+            <!-- ================================================= -->
+            <!-- VARIANTS -->
+            <!-- ================================================= -->
+
+            {% if variants %}
+
+                <div class="variant-section mt-4">
+
+
+                    <!-- ================= COLOR ================= -->
+
+                    <div class="mb-4">
+
+                        <label class="variant-title">
+
+                            {% trans "Color" %}
+
+                        </label>
+
+
+                        <div
+                            id="colorOptions"
+                            class="d-flex flex-wrap gap-2"
+                        >
+
+                            {% for color in colors %}
+
+                                <button
+                                    type="button"
+                                    class="variant-color-btn"
+                                    data-color="{{ color.color }}"
+                                >
+
+                                    {% if color.color_code %}
+
+                                        <span
+                                            class="color-circle"
+                                            style="background-color: {{ color.color_code }};"
+                                        ></span>
+
+                                    {% endif %}
+
+                                    <span>
+                                        {{ color.color }}
+                                    </span>
+
+                                </button>
+
+                            {% endfor %}
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- ================= STORAGE ================= -->
+
+                    <div class="mb-4">
+
+                        <label class="variant-title">
+
+                            {% trans "Storage" %}
+
+                        </label>
+
+
+                        <div
+                            id="storageOptions"
+                            class="d-flex flex-wrap gap-2"
+                        >
+
+                            {% for storage in storages %}
+
+                                {% if storage %}
+
+                                    <button
+                                        type="button"
+                                        class="variant-storage-btn"
+                                        data-storage="{{ storage }}"
+                                    >
+
+                                        {{ storage }}
+
+                                    </button>
+
+                                {% endif %}
+
+                            {% endfor %}
+
+                        </div>
+
+                    </div>
+
+
+                </div>
+
+            {% endif %}
+
+
+            <!-- ================================================= -->
+            <!-- STOCK -->
+            <!-- ================================================= -->
+
+            <div
+                id="stockInfo"
+                class="mb-3"
+            >
+
+                {% if product.in_stock %}
+
+                    <p class="text-success small">
+
+                        <i class="bi bi-check-circle"></i>
+
+                        {% trans "In Stock" %}
+
+                        —
+
+                        <span id="stockNumber">
+                            {{ product.stock }}
+                        </span>
+
+                        {% trans "available" %}
+
+                    </p>
+
+                {% else %}
+
+                    <p class="text-danger small">
+
+                        <i class="bi bi-x-circle"></i>
+
+                        {% trans "Out of Stock" %}
+
+                    </p>
+
+                {% endif %}
+
+            </div>
+
+
+            <!-- ================================================= -->
+            <!-- CART -->
+            <!-- ================================================= -->
+
+            <form
+                action="{% url 'cart:cart_add' product.id %}"
+                method="post"
+                id="cartForm"
+            >
+
+                {% csrf_token %}
+
+
+                <!-- SELECTED VARIANT -->
+
+                <input
+                    type="hidden"
+                    name="variant_id"
+                    id="variantId"
+                    value=""
+                >
+
+
+                <!-- ================= QUANTITY ================= -->
+
+                <div class="d-flex align-items-center gap-3 mb-4">
+
+                    <label class="fw-semibold">
+                        {% trans "Quantity:" %}
+                    </label>
+
+
+                    <div
+                        class="input-group"
+                        style="width:150px;"
+                    >
+
+                        <button
+                            type="button"
+                            class="btn btn-outline-secondary"
+                            id="qtyDecrease"
+                        >
+                            −
+                        </button>
+
+
+                        <input
+                            type="number"
+                            class="form-control text-center"
+                            id="qtyInput"
+                            name="quantity"
+                            value="1"
+                            min="1"
+                            max="{{ product.stock }}"
+                        >
+
+
+                        <button
+                            type="button"
+                            class="btn btn-outline-secondary"
+                            id="qtyIncrease"
+                        >
+                            +
+                        </button>
+
+                    </div>
+
+                </div>
+
+
+                <!-- ================= BUTTONS ================= -->
+
+                <div class="d-flex gap-2">
+
+                    <button
+                        type="submit"
+                        class="btn btn-outline-primary rounded-pill px-4"
+                        id="addToCartBtn"
+                        {% if not product.in_stock %}disabled{% endif %}
+                    >
+
+                        <i class="bi bi-cart-plus"></i>
+
+                        {% trans "Add to Cart" %}
+
+                    </button>
+
+
+                    <button
+                        type="submit"
+                        name="buy_now"
+                        value="1"
+                        class="btn btn-primary rounded-pill px-4"
+                        id="buyNowBtn"
+                        {% if not product.in_stock %}disabled{% endif %}
+                    >
+
+                        <i class="bi bi-lightning-charge"></i>
+
+                        {% trans "Buy Now" %}
+
+                    </button>
+
+                </div>
+
+            </form>
+
+
+            <!-- ================================================= -->
+            <!-- SPECIFICATIONS -->
+            <!-- ================================================= -->
+
+            {% if specifications %}
+
+                <div class="mt-5">
+
+                    <h5 class="fw-bold mb-3">
+
+                        {% trans "Specifications" %}
+
+                    </h5>
+
+
+                    <table class="table table-sm">
+
+                        <tbody>
+
+                            {% for spec in specifications %}
+
+                                <tr>
+
+                                    <th
+                                        class="text-muted fw-normal"
+                                        style="width:40%;"
+                                    >
+                                        {{ spec.name }}
+                                    </th>
+
+                                    <td>
+                                        {{ spec.value }}
+                                    </td>
+
+                                </tr>
+
+                            {% endfor %}
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            {% endif %}
+
+        </div>
+
+    </div>
+
+
+    <!-- ========================================================= -->
+    <!-- REVIEWS -->
+    <!-- ========================================================= -->
+
+    <div class="row mt-5">
+
+        <div class="col-lg-8">
+
+            <h4 class="fw-bold mb-4">
+
+                {% trans "Customer Reviews" %}
+
+            </h4>
+
+
+            {% for review in reviews %}
+
+                <div class="border-bottom pb-3 mb-3">
+
+                    <div class="d-flex justify-content-between">
+
+                        <strong>
+                            {{ review.user.username }}
+                        </strong>
+
+                        <small class="text-muted">
+
+                            {{ review.created_at|date:"M d, Y" }}
+
+                        </small>
+
+                    </div>
+
+
+                    <div class="rating-stars">
+
+                        {% for i in "12345" %}
+
+                            {% if forloop.counter <= review.rating %}
+
+                                <i class="bi bi-star-fill"></i>
+
+                            {% else %}
+
+                                <i class="bi bi-star"></i>
+
+                            {% endif %}
+
+                        {% endfor %}
+
+                    </div>
+
+
+                    <p class="mb-0 mt-2">
+
+                        {{ review.comment }}
+
+                    </p>
+
+                </div>
+
+            {% empty %}
+
+                <p class="text-muted">
+
+                    {% trans "No reviews yet. Be the first to review this product!" %}
+
+                </p>
+
+            {% endfor %}
+
+
+            <!-- ================= WRITE REVIEW ================= -->
+
+            {% if user.is_authenticated and not user_has_reviewed %}
+
+                <h5 class="fw-bold mt-5">
+
+                    {% trans "Write a Review" %}
+
+                </h5>
+
+
+                <form method="post">
+
+                    {% csrf_token %}
+
+
+                    <div class="mb-3">
+
+                        <label class="form-label">
+
+                            {% trans "Rating" %}
+
+                        </label>
+
+                        {{ review_form.rating }}
+
+                    </div>
+
+
+                    <div class="mb-3">
+
+                        <label class="form-label">
+
+                            {% trans "Comment" %}
+
+                        </label>
+
+                        {{ review_form.comment }}
+
+                    </div>
+
+
+                    <button
+                        type="submit"
+                        class="btn btn-primary rounded-pill"
+                    >
+
+                        {% trans "Submit Review" %}
+
+                    </button>
+
+                </form>
+
+
+            {% elif not user.is_authenticated %}
+
+                <p>
+
+                    <a href="{% url 'accounts:login' %}">
+                        {% trans "Log in" %}
+                    </a>
+
+                    {% trans "to write a review." %}
+
+                </p>
+
+            {% endif %}
+
+        </div>
+
+    </div>
+
+
+    <!-- ========================================================= -->
+    <!-- RELATED PRODUCTS -->
+    <!-- ========================================================= -->
+
+    {% if related_products %}
+
+        <div class="mt-5">
+
+            <h4 class="section-title">
+
+                {% trans "Related Products" %}
+
+            </h4>
+
+
+            <div class="row g-3">
+
+                {% for product in related_products %}
+
+                    {% include 'products/includes/product_card.html' %}
+
+                {% endfor %}
+
+            </div>
+
+        </div>
+
+    {% endif %}
+
+
+    <!-- ========================================================= -->
+    <!-- RECENTLY VIEWED -->
+    <!-- ========================================================= -->
+
+    {% if recently_viewed %}
+
+        <div class="mt-5">
+
+            <h4 class="section-title">
+
+                {% trans "Recently Viewed" %}
+
+            </h4>
+
+
+            <div class="row g-3">
+
+                {% for product in recently_viewed %}
+
+                    {% include 'products/includes/product_card.html' %}
+
+                {% endfor %}
+
+            </div>
+
+        </div>
+
+    {% endif %}
+
+</div>
+
+
+<!-- ========================================================= -->
+<!-- VARIANT JSON -->
+<!-- ========================================================= -->
+
+{{ variants_data|json_script:"product-variants-data" }}
+
+
+<!-- ========================================================= -->
+<!-- STYLE -->
+<!-- ========================================================= -->
+
+<style>
+
+.product-image-box {
+    border: 1px solid #e5e7eb;
+    border-radius: 18px;
+    padding: 20px;
+    background: #fff;
+    text-align: center;
+    min-height: 500px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.product-image-box img {
+    max-height: 480px;
+    max-width: 100%;
+    object-fit: contain;
+    transition: opacity .2s ease, transform .3s ease;
+}
+
+.product-image-box img:hover {
+    transform: scale(1.03);
+}
+
+.thumbnail-img {
+    width: 75px;
+    height: 75px;
+    object-fit: cover;
+    border: 2px solid #e5e7eb;
+    border-radius: 10px;
+    cursor: pointer;
+    padding: 3px;
+    transition: all .2s ease;
+}
+
+.thumbnail-img:hover {
+    border-color: #0d6efd;
+    transform: translateY(-2px);
+}
+
+.variant-title {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 10px;
+}
+
+.variant-color-btn,
+.variant-storage-btn {
+    border: 1px solid #dee2e6;
+    background: #fff;
+    color: #212529;
+    border-radius: 10px;
+    padding: 9px 15px;
+    cursor: pointer;
+    transition: all .2s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.variant-color-btn:hover,
+.variant-storage-btn:hover {
+    border-color: #0d6efd;
+}
+
+.variant-color-btn.active,
+.variant-storage-btn.active {
+    border-color: #0d6efd;
+    background: #0d6efd;
+    color: white;
+    box-shadow: 0 3px 10px rgba(13, 110, 253, .2);
+}
+
+.variant-color-btn.disabled,
+.variant-storage-btn.disabled {
+    opacity: .35;
+    cursor: not-allowed;
+    text-decoration: line-through;
+}
+
+.color-circle {
+    width: 20px;
+    height: 20px;
+    min-width: 20px;
+    border-radius: 50%;
+    display: inline-block;
+    border: 1px solid #aaa;
+}
+
+</style>
+
+
+<!-- ========================================================= -->
+<!-- JAVASCRIPT -->
+<!-- ========================================================= -->
+
+<script>
+
+document.addEventListener(
+    "DOMContentLoaded",
+    function () {
+
+
+        /* =====================================================
+           VARIANT DATA
+        ===================================================== */
+
+        const variantsElement =
+            document.getElementById(
+                "product-variants-data"
+            );
+
+
+        let variants = [];
+
+
+        if (variantsElement) {
+
+            try {
+
+                variants = JSON.parse(
+                    variantsElement.textContent
+                );
+
+            } catch (error) {
+
+                console.error(
+                    "Variant JSON error:",
+                    error
+                );
+
+            }
+
+        }
+
+
+        console.log(
+            "Product variants:",
+            variants
+        );
+
+
+        /* =====================================================
+           ELEMENTS
+        ===================================================== */
+
+        const colorButtons =
+            document.querySelectorAll(
+                ".variant-color-btn"
+            );
+
+
+        const storageButtons =
+            document.querySelectorAll(
+                ".variant-storage-btn"
+            );
+
+
+        const mainImage =
+            document.getElementById(
+                "mainProductImage"
+            );
+
+
+        const priceElement =
+            document.getElementById(
+                "productPrice"
+            );
+
+
+        const oldPriceElement =
+            document.getElementById(
+                "productOldPrice"
+            );
+
+
+        const discountElement =
+            document.getElementById(
+                "productDiscount"
+            );
+
+
+        const discountPercentElement =
+            document.getElementById(
+                "discountPercent"
+            );
+
+
+        const stockInfo =
+            document.getElementById(
+                "stockInfo"
+            );
+
+
+        const variantId =
+            document.getElementById(
+                "variantId"
+            );
+
+
+        const skuElement =
+            document.getElementById(
+                "productSku"
+            );
+
+
+        const qtyInput =
+            document.getElementById(
+                "qtyInput"
+            );
+
+
+        const addToCartBtn =
+            document.getElementById(
+                "addToCartBtn"
+            );
+
+
+        const buyNowBtn =
+            document.getElementById(
+                "buyNowBtn"
+            );
+
+
+        let selectedColor = null;
+
+        let selectedStorage = null;
+
+
+        /* =====================================================
+           FIND VARIANT
+        ===================================================== */
+
+        function findVariant() {
+
+            return variants.find(
+                function (variant) {
+
+                    return (
+                        variant.color === selectedColor &&
+                        variant.storage === selectedStorage
+                    );
+
+                }
+            );
+
+        }
+
+
+        /* =====================================================
+           UPDATE STORAGE BUTTONS
+        ===================================================== */
+
+        function updateStorageButtons() {
+
+            storageButtons.forEach(
+                function (button) {
+
+                    const storage =
+                        button.dataset.storage;
+
+
+                    const exists =
+                        variants.some(
+                            function (variant) {
+
+                                return (
+                                    variant.color === selectedColor &&
+                                    variant.storage === storage
+                                );
+
+                            }
+                        );
+
+
+                    button.classList.toggle(
+                        "disabled",
+                        !exists
+                    );
+
+
+                    if (!exists) {
+
+                        button.classList.remove(
+                            "active"
+                        );
+
+                    }
+
+                }
+            );
+
+        }
+
+
+        /* =====================================================
+           UPDATE VARIANT
+        ===================================================== */
+
+        function updateVariant() {
+
+            if (
+                !selectedColor ||
+                !selectedStorage
+            ) {
+
+                return;
+
+            }
+
+
+            const variant =
+                findVariant();
+
+
+            if (!variant) {
+
+                return;
+
+            }
+
+
+            /* =================================================
+               IMAGE
+            ================================================= */
+
+            if (
+                variant.image &&
+                mainImage
+            ) {
+
+                mainImage.style.opacity = "0.3";
+
+
+                setTimeout(
+                    function () {
+
+                        mainImage.src =
+                            variant.image;
+
+                        mainImage.onload =
+                            function () {
+
+                                mainImage.style.opacity = "1";
+
+                            };
+
+                    },
+                    120
+                );
+
+            }
+
+
+            /* =================================================
+               PRICE
+            ================================================= */
+
+            const normalPrice =
+                Number(variant.price || 0);
+
+
+            const discountPrice =
+                Number(
+                    variant.discount_price || 0
+                );
+
+
+            if (
+                discountPrice > 0 &&
+                discountPrice < normalPrice
+            ) {
+
+                priceElement.textContent =
+                    "$" + discountPrice.toFixed(2);
+
+
+                oldPriceElement.textContent =
+                    "$" + normalPrice.toFixed(2);
+
+
+                oldPriceElement.classList.remove(
+                    "d-none"
+                );
+
+
+                const discount =
+                    Math.round(
+                        (
+                            1 -
+                            (
+                                discountPrice /
+                                normalPrice
+                            )
+                        ) * 100
+                    );
+
+
+                discountPercentElement.textContent =
+                    discount;
+
+
+                discountElement.classList.remove(
+                    "d-none"
+                );
+
+            } else {
+
+                priceElement.textContent =
+                    "$" + normalPrice.toFixed(2);
+
+
+                oldPriceElement.classList.add(
+                    "d-none"
+                );
+
+
+                discountElement.classList.add(
+                    "d-none"
+                );
+
+            }
+
+
+            /* =================================================
+               STOCK
+            ================================================= */
+
+            const stock =
+                Number(
+                    variant.stock || 0
+                );
+
+
+            if (stock > 0) {
+
+                stockInfo.innerHTML = `
+
+                    <p class="text-success small mb-0">
+
+                        <i class="bi bi-check-circle"></i>
+
+                        {% trans "In Stock" %}
+
+                        —
+
+                        <span>
+                            ${stock}
+                        </span>
+
+                        {% trans "available" %}
+
+                    </p>
+
+                `;
+
+
+                addToCartBtn.disabled = false;
+
+                buyNowBtn.disabled = false;
+
+
+                qtyInput.max = stock;
+
+
+                if (
+                    Number(qtyInput.value) >
+                    stock
+                ) {
+
+                    qtyInput.value = stock;
+
+                }
+
+            } else {
+
+                stockInfo.innerHTML = `
+
+                    <p class="text-danger small mb-0">
+
+                        <i class="bi bi-x-circle"></i>
+
+                        {% trans "Out of Stock" %}
+
+                    </p>
+
+                `;
+
+
+                addToCartBtn.disabled = true;
+
+                buyNowBtn.disabled = true;
+
+
+                qtyInput.value = 1;
+
+                qtyInput.max = 1;
+
+            }
+
+
+            /* =================================================
+               SKU
+            ================================================= */
+
+            if (variant.sku) {
+
+                skuElement.textContent =
+                    "SKU: " + variant.sku;
+
+            }
+
+
+            /* =================================================
+               VARIANT ID
+            ================================================= */
+
+            variantId.value =
+                variant.id;
+
+        }
+
+
+        /* =====================================================
+           COLOR CLICK
+        ===================================================== */
+
+        colorButtons.forEach(
+            function (button) {
+
+                button.addEventListener(
+                    "click",
+                    function () {
+
+
+                        selectedColor =
+                            this.dataset.color;
+
+
+                        colorButtons.forEach(
+                            function (btn) {
+
+                                btn.classList.remove(
+                                    "active"
+                                );
+
+                            }
+                        );
+
+
+                        this.classList.add(
+                            "active"
+                        );
+
+
+                        updateStorageButtons();
+
+
+                        /* ==============================
+                           AUTO SELECT FIRST STORAGE
+                        ============================== */
+
+                        const firstVariant =
+                            variants.find(
+                                function (variant) {
+
+                                    return (
+                                        variant.color ===
+                                        selectedColor &&
+                                        Number(
+                                            variant.stock || 0
+                                        ) > 0
+                                    );
+
+                                }
+                            )
+                            ||
+                            variants.find(
+                                function (variant) {
+
+                                    return (
+                                        variant.color ===
+                                        selectedColor
+                                    );
+
+                                }
+                            );
+
+
+                        if (firstVariant) {
+
+                            selectedStorage =
+                                firstVariant.storage;
+
+
+                            storageButtons.forEach(
+                                function (btn) {
+
+                                    btn.classList.toggle(
+                                        "active",
+                                        btn.dataset.storage ===
+                                        selectedStorage
+                                    );
+
+                                }
+                            );
+
+
+                            updateVariant();
+
+                        }
+
+                    }
+                );
+
+            }
+        );
+
+
+        /* =====================================================
+           STORAGE CLICK
+        ===================================================== */
+
+        storageButtons.forEach(
+            function (button) {
+
+                button.addEventListener(
+                    "click",
+                    function () {
+
+
+                        if (
+                            this.classList.contains(
+                                "disabled"
+                            )
+                        ) {
+
+                            return;
+
+                        }
+
+
+                        selectedStorage =
+                            this.dataset.storage;
+
+
+                        storageButtons.forEach(
+                            function (btn) {
+
+                                btn.classList.remove(
+                                    "active"
+                                );
+
+                            }
+                        );
+
+
+                        this.classList.add(
+                            "active"
+                        );
+
+
+                        updateVariant();
+
+                    }
+                );
+
+            }
+        );
+
+
+        /* =====================================================
+           QUANTITY -
+        ===================================================== */
+
+        const decrease =
+            document.getElementById(
+                "qtyDecrease"
+            );
+
+
+        const increase =
+            document.getElementById(
+                "qtyIncrease"
+            );
+
+
+        decrease.addEventListener(
+            "click",
+            function () {
+
+                let value =
+                    Number(
+                        qtyInput.value
+                    );
+
+
+                if (value > 1) {
+
+                    qtyInput.value =
+                        value - 1;
+
+                }
+
+            }
+        );
+
+
+        /* =====================================================
+           QUANTITY +
+        ===================================================== */
+
+        increase.addEventListener(
+            "click",
+            function () {
+
+                let value =
+                    Number(
+                        qtyInput.value
+                    );
+
+
+                let max =
+                    Number(
+                        qtyInput.max
+                    );
+
+
+                if (
+                    max > 0 &&
+                    value < max
+                ) {
+
+                    qtyInput.value =
+                        value + 1;
+
+                }
+
+            }
+        );
+
+
+        /* =====================================================
+           GALLERY
+        ===================================================== */
+
+        document
+            .querySelectorAll(
+                ".thumbnail-img"
+            )
+            .forEach(
+                function (thumbnail) {
+
+                    thumbnail.addEventListener(
+                        "click",
+                        function () {
+
+                            const image =
+                                this.dataset.full;
+
+
+                            if (
+                                image &&
+                                mainImage
+                            ) {
+
+                                mainImage.src =
+                                    image;
+
+                            }
+
+                        }
+                    );
+
+                }
+            );
+
+
+        /* =====================================================
+           DEFAULT VARIANT
+        ===================================================== */
+
+        if (
+            variants.length > 0
+        ) {
+
+
+            let firstVariant =
+                variants.find(
+                    function (variant) {
+
+                        return Number(
+                            variant.stock || 0
+                        ) > 0;
+
+                    }
+                )
+                ||
+                variants[0];
+
+
+            selectedColor =
+                firstVariant.color;
+
+
+            selectedStorage =
+                firstVariant.storage;
+
+
+            /* ==============================
+               ACTIVE COLOR
+            ============================== */
+
+            colorButtons.forEach(
+                function (button) {
+
+                    button.classList.toggle(
+                        "active",
+                        button.dataset.color ===
+                        selectedColor
+                    );
+
+                }
+            );
+
+
+            /* ==============================
+               STORAGE AVAILABILITY
+            ============================== */
+
+            updateStorageButtons();
+
+
+            /* ==============================
+               ACTIVE STORAGE
+            ============================== */
+
+            storageButtons.forEach(
+                function (button) {
+
+                    button.classList.toggle(
+                        "active",
+                        button.dataset.storage ===
+                        selectedStorage
+                    );
+
+                }
+            );
+
+
+            /* ==============================
+               UPDATE PRODUCT
+            ============================== */
+
+            updateVariant();
+
+        }
+
+
+    }
+
+);
+
+</script>
+
+{% endblock %}

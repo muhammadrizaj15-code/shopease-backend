@@ -1,0 +1,62 @@
+{% extends 'dashboard/base_dashboard.html' %}
+{% block title %}{{ title }} | ShopEase{% endblock %}
+
+{% block dashboard_content %}
+<h2 class="fw-bold mb-4">{{ title }}</h2>
+
+<div class="border rounded-xl p-4">
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="row g-3">
+            <div class="col-md-6">
+                <label class="form-label">Category</label>
+                {{ form.category }}
+            </div>
+            <div class="col-md-6">
+                <label class="form-label">Product Name</label>
+                {{ form.name }}
+            </div>
+            <div class="col-12">
+                <label class="form-label">Short Description</label>
+                {{ form.short_description }}
+            </div>
+            <div class="col-12">
+                <label class="form-label">Full Description</label>
+                {{ form.description }}
+            </div>
+            <div class="col-md-4">
+                <label class="form-label">Price</label>
+                {{ form.price }}
+            </div>
+            <div class="col-md-4">
+                <label class="form-label">Discount Price (optional)</label>
+                {{ form.discount_price }}
+            </div>
+            <div class="col-md-4">
+                <label class="form-label">Stock</label>
+                {{ form.stock }}
+            </div>
+            <div class="col-md-6">
+                <label class="form-label">Product Image</label>
+                {{ form.image }}
+            </div>
+            <div class="col-md-6">
+                <div class="form-check mt-4">
+                    {{ form.is_active }} <label class="form-check-label">Active</label>
+                </div>
+                <div class="form-check">
+                    {{ form.is_featured }} <label class="form-check-label">Featured</label>
+                </div>
+                <div class="form-check">
+                    {{ form.is_new_arrival }} <label class="form-check-label">New Arrival</label>
+                </div>
+                <div class="form-check">
+                    {{ form.is_best_seller }} <label class="form-check-label">Best Seller</label>
+                </div>
+            </div>
+        </div>
+        <button type="submit" class="btn btn-primary mt-4"><i class="bi bi-save"></i> Save Product</button>
+        <a href="{% url 'dashboard:product_list' %}" class="btn btn-outline-secondary mt-4">Cancel</a>
+    </form>
+</div>
+{% endblock %}

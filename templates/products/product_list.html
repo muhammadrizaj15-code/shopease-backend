@@ -1,0 +1,121 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% block title %}{% trans "Products" %} | ShopEase{% endblock %}
+
+{% block content %}
+<div class="container py-5" data-aos="fade-up">
+    <h2 class="section-title">{% if current_category %}{{ current_category.name }}{% else %}{% trans "All Products" %}{% endif %}</h2>
+
+    <div class="row">
+        <!-- ================= FILTER SIDEBAR ================= -->
+        <div class="col-lg-3 mb-4">
+            <div class="p-3 border rounded-xl">
+                <h6 class="fw-bold mb-3"><i class="bi bi-funnel"></i> {% trans "Filters" %}</h6>
+                <form method="get">
+                    <div class="mb-3">
+                        <label class="form-label small fw-semibold">{% trans "Search" %}</label>
+                        {{ form.q }}
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label small fw-semibold">{% trans "Price Range" %}</label>
+                        <div class="d-flex gap-2">
+                            {{ form.min_price }}
+                            {{ form.max_price }}
+                        </div>
+                    </div>
+
+                    {% if brands %}
+                    <div class="mb-3">
+                        <label class="form-label small fw-semibold">{% trans "Brand" %}</label>
+                        {% for brand in brands %}
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" name="brand" value="{{ brand.slug }}"
+                                   id="brand{{ brand.id }}" {% if brand.slug in selected_brands %}checked{% endif %}>
+                            <label class="form-check-label small" for="brand{{ brand.id }}">{{ brand.name }}</label>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+
+                    <div class="mb-3">
+                        <label class="form-label small fw-semibold">{% trans "Rating" %}</label>
+                        <select name="rating" class="form-select form-select-sm">
+                            <option value="">{% trans "Any Rating" %}</option>
+                            {% for i in "4321" %}
+                            <option value="{{ i }}" {% if request.GET.rating == i %}selected{% endif %}>{{ i }}★ {% trans "& up" %}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label small fw-semibold">{% trans "Availability" %}</label>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" name="availability" value="in_stock"
+                                   id="inStockOnly" {% if request.GET.availability == 'in_stock' %}checked{% endif %}>
+                            <label class="form-check-label small" for="inStockOnly">{% trans "In Stock Only" %}</label>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label small fw-semibold">{% trans "Sort By" %}</label>
+                        {{ form.sort }}
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100 btn-sm rounded-pill">{% trans "Apply Filters" %}</button>
+                    <a href="{% url 'products:product_list' %}" class="btn btn-outline-secondary w-100 btn-sm mt-2 rounded-pill">{% trans "Reset" %}</a>
+                </form>
+            </div>
+
+            <div class="p-3 border rounded-xl mt-3">
+                <h6 class="fw-bold mb-3"><i class="bi bi-grid"></i> {% trans "Categories" %}</h6>
+                <ul class="list-unstyled mb-0">
+                    <li class="mb-2"><a href="{% url 'products:product_list' %}" class="text-dark {% if not current_category %}fw-bold text-primary{% endif %}">{% trans "All Categories" %}</a></li>
+                    {% for cat in categories %}
+                    <li class="mb-2">
+                        <a href="{{ cat.get_absolute_url }}" class="text-dark {% if current_category.id == cat.id %}fw-bold text-primary{% endif %}">
+                            {{ cat.name }} <span class="text-muted small">({{ cat.product_count }})</span>
+                        </a>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+
+        <!-- ================= PRODUCT GRID ================= -->
+        <div class="col-lg-9">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <span class="text-muted small">{{ page_obj.paginator.count }} {% trans "product(s) found" %}</span>
+            </div>
+
+            <div class="row g-3">
+                {% for product in products %}
+                    {% include 'products/includes/product_card.html' %}
+                {% empty %}
+                <div class="col-12 text-center py-5">
+                    <i class="bi bi-emoji-frown fs-1 text-muted"></i>
+                    <p class="text-muted mt-2">{% trans "No products match your search." %}</p>
+                </div>
+                {% endfor %}
+            </div>
+
+            <!-- ================= PAGINATION ================= -->
+            {% if page_obj.paginator.num_pages > 1 %}
+            <nav class="mt-4">
+                <ul class="pagination justify-content-center">
+                    {% if page_obj.has_previous %}
+                    <li class="page-item"><a class="page-link" href="?page={{ page_obj.previous_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}">{% trans "Previous" %}</a></li>
+                    {% endif %}
+                    {% for num in page_obj.paginator.page_range %}
+                    <li class="page-item {% if page_obj.number == num %}active{% endif %}">
+                        <a class="page-link" href="?page={{ num }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}">{{ num }}</a>
+                    </li>
+                    {% endfor %}
+                    {% if page_obj.has_next %}
+                    <li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}">{% trans "Next" %}</a></li>
+                    {% endif %}
+                </ul>
+            </nav>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

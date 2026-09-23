@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% block title %}{% trans "Create Account" %} | ShopEase{% endblock %}
+
+{% block content %}
+<div class="auth-page py-5">
+    <div class="container">
+        <div class="auth-card auth-card-wide mx-auto">
+            <div class="auth-side">
+                <div class="brand-gradient auth-logo"><i class="bi bi-shop"></i> ShopEase</div>
+                <h2 class="fw-bold mt-3">{% trans "Join ShopEase" %}</h2>
+                <p class="opacity-90">{% trans "Create an account for a faster checkout, order tracking and exclusive deals." %}</p>
+                <i class="bi bi-person-hearts auth-side-icon"></i>
+            </div>
+            <div class="auth-form">
+                <h3 class="fw-bold mb-1"><i class="bi bi-person-plus"></i> {% trans "Create Account" %}</h3>
+                <p class="text-secondary small mb-4">{% trans "It only takes a minute." %}</p>
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="mb-3 input-icon-group">
+                        <i class="bi bi-person"></i>
+                        {{ form.username }}
+                    </div>
+                    <div class="row">
+                        <div class="col-6 mb-3 input-icon-group">
+                            <i class="bi bi-badge-tm"></i>
+                            {{ form.first_name }}
+                        </div>
+                        <div class="col-6 mb-3 input-icon-group">
+                            <i class="bi bi-badge-tm"></i>
+                            {{ form.last_name }}
+                        </div>
+                    </div>
+                    <div class="mb-3 input-icon-group">
+                        <i class="bi bi-envelope"></i>
+                        {{ form.email }}
+                    </div>
+                    <div class="row">
+                        <div class="col-6 mb-3 input-icon-group">
+                            <i class="bi bi-lock"></i>
+                            {{ form.password1 }}
+                        </div>
+                        <div class="col-6 mb-3 input-icon-group">
+                            <i class="bi bi-lock-fill"></i>
+                            {{ form.password2 }}
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100 rounded-pill py-2">{% trans "Register" %}</button>
+                </form>
+                <p class="text-center mt-4 small">{% trans "Already have an account?" %} <a href="{% url 'accounts:login' %}" class="fw-semibold">{% trans "Login" %}</a></p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

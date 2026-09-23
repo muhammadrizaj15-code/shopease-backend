@@ -1,0 +1,39 @@
+{% extends 'dashboard/base_dashboard.html' %}
+{% block title %}Update Order {{ order.order_number }} | ShopEase{% endblock %}
+
+{% block dashboard_content %}
+<h2 class="fw-bold mb-4">Order {{ order.order_number }}</h2>
+
+<div class="row g-4">
+    <div class="col-md-7">
+        <div class="border rounded-xl p-4">
+            <h6 class="fw-bold">Customer</h6>
+            <p class="mb-1">{{ order.full_name }} ({{ order.user.username }})</p>
+            <p class="mb-1">{{ order.phone }} {% if order.email %}| {{ order.email }}{% endif %}</p>
+            <p class="mb-3">{{ order.address_line }}, {{ order.city }}, {{ order.region }} {{ order.postal_code }}, {{ order.country }}</p>
+
+            <h6 class="fw-bold">Items</h6>
+            <table class="table table-sm">
+                <thead><tr><th>Product</th><th>Price</th><th>Qty</th><th>Subtotal</th></tr></thead>
+                <tbody>
+                    {% for item in order.items.all %}
+                    <tr><td>{{ item.product_name }}</td><td>${{ item.price }}</td><td>{{ item.quantity }}</td><td>${{ item.subtotal }}</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            <div class="d-flex justify-content-between fw-bold"><span>Total</span><span>${{ order.total }}</span></div>
+        </div>
+    </div>
+
+    <div class="col-md-5">
+        <div class="border rounded-xl p-4">
+            <h6 class="fw-bold mb-3">Update Status</h6>
+            <form method="post">
+                {% csrf_token %}
+                {{ form.status }}
+                <button type="submit" class="btn btn-primary w-100 mt-3"><i class="bi bi-save"></i> Update Status</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

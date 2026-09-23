@@ -1,0 +1,46 @@
+{% extends 'dashboard/base_dashboard.html' %}
+{% block title %}Manage Orders | ShopEase{% endblock %}
+
+{% block dashboard_content %}
+<h2 class="fw-bold mb-4">Orders</h2>
+
+<div class="mb-3">
+    <a href="{% url 'dashboard:order_list' %}" class="btn btn-sm {% if not current_status %}btn-primary{% else %}btn-outline-primary{% endif %}">All</a>
+    {% for value, label in status_choices %}
+    <a href="?status={{ value }}" class="btn btn-sm {% if current_status == value %}btn-primary{% else %}btn-outline-primary{% endif %}">{{ label }}</a>
+    {% endfor %}
+</div>
+
+<div class="border rounded-xl p-3">
+    <div class="table-responsive">
+        <table class="table align-middle">
+            <thead><tr><th>Order #</th><th>Customer</th><th>Items</th><th>Total</th><th>Payment</th><th>Status</th><th>Date</th><th></th></tr></thead>
+            <tbody>
+                {% for order in page_obj %}
+                <tr>
+                    <td>{{ order.order_number }}</td>
+                    <td>{{ order.user.username }}</td>
+                    <td>{{ order.item_count }}</td>
+                    <td>${{ order.total }}</td>
+                    <td>{{ order.get_payment_method_display }}</td>
+                    <td><span class="badge bg-secondary">{{ order.get_status_display }}</span></td>
+                    <td>{{ order.created_at|date:"M d, Y" }}</td>
+                    <td><a href="{% url 'dashboard:order_update_status' order.id %}" class="btn btn-sm btn-outline-primary">Update</a></td>
+                </tr>
+                {% empty %}
+                <tr><td colspan="8" class="text-center text-muted">No orders found.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% if page_obj.paginator.num_pages > 1 %}
+    <nav>
+        <ul class="pagination justify-content-center">
+            {% for num in page_obj.paginator.page_range %}
+            <li class="page-item {% if page_obj.number == num %}active{% endif %}"><a class="page-link" href="?page={{ num }}">{{ num }}</a></li>
+            {% endfor %}
+        </ul>
+    </nav>
+    {% endif %}
+</div>
+{% endblock %}

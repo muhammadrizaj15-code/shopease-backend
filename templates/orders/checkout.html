@@ -1,0 +1,104 @@
+{% extends 'base.html' %}
+{% block title %}Checkout | ShopEase{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <h2 class="section-title">Checkout</h2>
+
+    <form method="post">
+        {% csrf_token %}
+        <div class="row g-4">
+            <div class="col-lg-8">
+                <!-- ================= SHIPPING INFO ================= -->
+                <div class="border rounded-xl p-4 mb-4">
+                    <h5 class="fw-bold mb-3"><span class="step-badge">1</span> Shipping Information</h5>
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label">Full Name</label>
+                            {{ form.full_name }}
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Phone</label>
+                            {{ form.phone }}
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Email</label>
+                            {{ form.email }}
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Country</label>
+                            {{ form.country }}
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label">Address</label>
+                            {{ form.address_line }}
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">City</label>
+                            {{ form.city }}
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Region</label>
+                            {{ form.region }}
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Postal Code</label>
+                            {{ form.postal_code }}
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label">Delivery Notes (optional)</label>
+                            {{ form.notes }}
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ================= PAYMENT METHOD ================= -->
+                <div class="border rounded-xl p-4">
+                    <h5 class="fw-bold mb-3"><span class="step-badge">2</span> Payment Method</h5>
+                    {{ form.payment_method }}
+                </div>
+            </div>
+
+            <!-- ================= ORDER SUMMARY ================= -->
+            <div class="col-lg-4">
+                <div class="border rounded-xl p-4">
+                    <h5 class="fw-bold mb-3"><span class="step-badge">3</span> Order Summary</h5>
+                    {% for item in cart.items.all %}
+                    <div class="d-flex justify-content-between small mb-2">
+                        <span>{{ item.product.name }} x{{ item.quantity }}</span>
+                        <span>${{ item.subtotal }}</span>
+                    </div>
+                    {% endfor %}
+                    <hr>
+                    <div class="d-flex justify-content-between mb-1">
+                        <span>Subtotal</span>
+                        <span>${{ cart.subtotal }}</span>
+                    </div>
+                    {% if cart.discount_amount > 0 %}
+                    <div class="d-flex justify-content-between mb-1 text-success">
+                        <span>Discount {% if cart.coupon %}({{ cart.coupon.code }}){% endif %}</span>
+                        <span>-${{ cart.discount_amount }}</span>
+                    </div>
+                    {% endif %}
+                    <div class="d-flex justify-content-between mb-1">
+                        <span>Shipping</span>
+                        <span>{% if shipping_fee == 0 %}Free{% else %}${{ shipping_fee }}{% endif %}</span>
+                    </div>
+                    {% if cart.tax_amount > 0 %}
+                    <div class="d-flex justify-content-between mb-1">
+                        <span>Tax</span>
+                        <span>${{ cart.tax_amount }}</span>
+                    </div>
+                    {% endif %}
+                    <hr>
+                    <div class="d-flex justify-content-between fw-bold fs-5 mb-3">
+                        <span>Total</span>
+                        <span>${{ total }}</span>
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100"><i class="bi bi-bag-check"></i> Place Order</button>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+{% endblock %}

@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <!-- ================= SIDEBAR ================= -->
+        <div class="col-lg-2 px-0 sidebar-dashboard">
+            <div class="p-3">
+                <h6 class="text-uppercase text-secondary small px-2 mt-2 mb-3">Admin Panel</h6>
+                <a href="{% url 'dashboard:home' %}" class="{% if request.resolver_match.url_name == 'home' %}active{% endif %}">
+                    <i class="bi bi-speedometer2"></i> Dashboard
+                </a>
+                <a href="{% url 'dashboard:product_list' %}" class="{% if 'product' in request.resolver_match.url_name %}active{% endif %}">
+                    <i class="bi bi-box-seam"></i> Products
+                </a>
+                <a href="{% url 'dashboard:category_list' %}" class="{% if 'category' in request.resolver_match.url_name %}active{% endif %}">
+                    <i class="bi bi-tags"></i> Categories
+                </a>
+                <a href="{% url 'dashboard:brand_list' %}" class="{% if 'brand' in request.resolver_match.url_name %}active{% endif %}">
+                    <i class="bi bi-award"></i> Brands
+                </a>
+                <a href="{% url 'dashboard:coupon_list' %}" class="{% if 'coupon' in request.resolver_match.url_name %}active{% endif %}">
+                    <i class="bi bi-ticket-perforated"></i> Coupons
+                </a>
+                <a href="{% url 'dashboard:order_list' %}" class="{% if 'order' in request.resolver_match.url_name %}active{% endif %}">
+                    <i class="bi bi-receipt"></i> Orders
+                </a>
+                <a href="{% url 'dashboard:user_list' %}" class="{% if request.resolver_match.url_name == 'user_list' %}active{% endif %}">
+                    <i class="bi bi-people"></i> Users
+                </a>
+                <a href="{% url 'dashboard:reports' %}" class="{% if request.resolver_match.url_name == 'reports' %}active{% endif %}">
+                    <i class="bi bi-bar-chart"></i> Reports
+                </a>
+                <hr class="border-secondary">
+                <a href="{% url 'products:home' %}"><i class="bi bi-box-arrow-left"></i> Back to Store</a>
+            </div>
+        </div>
+
+        <!-- ================= MAIN CONTENT ================= -->
+        <div class="col-lg-10 py-4">
+            {% block dashboard_content %}{% endblock %}
+        </div>
+    </div>
+</div>
+{% endblock %}

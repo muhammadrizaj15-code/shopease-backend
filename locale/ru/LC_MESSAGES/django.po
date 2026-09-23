@@ -1,0 +1,139 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: ShopEase 1.0\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: ru\n"
+
+msgid "Home"
+msgstr "Главная"
+
+msgid "Products"
+msgstr "Товары"
+
+msgid "Categories"
+msgstr "Категории"
+
+msgid "Admin Dashboard"
+msgstr "Панель администратора"
+
+msgid "Search products..."
+msgstr "Поиск товаров..."
+
+msgid "My Profile"
+msgstr "Мой профиль"
+
+msgid "My Orders"
+msgstr "Мои заказы"
+
+msgid "Logout"
+msgstr "Выйти"
+
+msgid "Login"
+msgstr "Войти"
+
+msgid "Register"
+msgstr "Регистрация"
+
+msgid "Shop"
+msgstr "Магазин"
+
+msgid "Account"
+msgstr "Аккаунт"
+
+msgid "Contact Us"
+msgstr "Свяжитесь с нами"
+
+msgid "All rights reserved."
+msgstr "Все права защищены."
+
+msgid "Subscribe to our Newsletter"
+msgstr "Подпишитесь на рассылку"
+
+msgid "Get the latest deals and new arrivals straight to your inbox."
+msgstr "Получайте лучшие предложения и новинки прямо на почту."
+
+msgid "Subscribe"
+msgstr "Подписаться"
+
+msgid "Shopping Cart"
+msgstr "Корзина"
+
+msgid "Continue Shopping"
+msgstr "Продолжить покупки"
+
+msgid "Order Summary"
+msgstr "Итог заказа"
+
+msgid "Apply"
+msgstr "Применить"
+
+msgid "Remove"
+msgstr "Удалить"
+
+msgid "Coupon code"
+msgstr "Промокод"
+
+msgid "Subtotal"
+msgstr "Промежуточный итог"
+
+msgid "Discount"
+msgstr "Скидка"
+
+msgid "Shipping"
+msgstr "Доставка"
+
+msgid "Free"
+msgstr "Бесплатно"
+
+msgid "Tax"
+msgstr "Налог"
+
+msgid "Grand Total"
+msgstr "Итого"
+
+msgid "items"
+msgstr "товаров"
+
+msgid "Proceed to Checkout"
+msgstr "Оформить заказ"
+
+msgid "Your cart is empty."
+msgstr "Ваша корзина пуста."
+
+msgid "Start Shopping"
+msgstr "Начать покупки"
+
+msgid "Add to Cart"
+msgstr "В корзину"
+
+msgid "Buy Now"
+msgstr "Купить сейчас"
+
+msgid "Out of Stock"
+msgstr "Нет в наличии"
+
+msgid "My Wishlist"
+msgstr "Избранное"
+
+msgid "Your wishlist is empty."
+msgstr "Список избранного пуст."
+
+msgid "Browse Products"
+msgstr "Смотреть товары"
+
+msgid "Checkout"
+msgstr "Оформление заказа"
+
+msgid "Place Order"
+msgstr "Оформить заказ"
+
+msgid "Shipping Information"
+msgstr "Информация о доставке"
+
+msgid "Payment Method"
+msgstr "Способ оплаты"
+
+msgid "Phone"
+msgstr "Телефон"

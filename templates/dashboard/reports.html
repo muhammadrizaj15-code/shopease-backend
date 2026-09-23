@@ -1,0 +1,61 @@
+{% extends 'dashboard/base_dashboard.html' %}
+{% block title %}Reports | ShopEase{% endblock %}
+
+{% block dashboard_content %}
+<h2 class="fw-bold mb-4">Reports</h2>
+
+<div class="row g-4">
+    <!-- ================= SALES REPORT ================= -->
+    <div class="col-12">
+        <div class="border rounded-xl p-4">
+            <h5 class="fw-bold mb-3"><i class="bi bi-graph-up"></i> Sales Report (Last 30 Days)</h5>
+            <div class="table-responsive">
+                <table class="table table-sm">
+                    <thead><tr><th>Date</th><th>Orders</th><th>Revenue</th></tr></thead>
+                    <tbody>
+                        {% for row in sales_report %}
+                        <tr><td>{{ row.day|date:"M d, Y" }}</td><td>{{ row.orders }}</td><td>${{ row.revenue }}</td></tr>
+                        {% empty %}
+                        <tr><td colspan="3" class="text-center text-muted">No sales in this period.</td></tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- ================= PRODUCT REPORT ================= -->
+    <div class="col-md-6">
+        <div class="border rounded-xl p-4">
+            <h5 class="fw-bold mb-3"><i class="bi bi-box-seam"></i> Top Selling Products</h5>
+            <table class="table table-sm">
+                <thead><tr><th>Product</th><th>Units Sold</th><th>Revenue</th></tr></thead>
+                <tbody>
+                    {% for row in product_report %}
+                    <tr><td>{{ row.product_name }}</td><td>{{ row.total_sold }}</td><td>${{ row.revenue }}</td></tr>
+                    {% empty %}
+                    <tr><td colspan="3" class="text-center text-muted">No product sales yet.</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- ================= CUSTOMER REPORT ================= -->
+    <div class="col-md-6">
+        <div class="border rounded-xl p-4">
+            <h5 class="fw-bold mb-3"><i class="bi bi-people"></i> Top Customers</h5>
+            <table class="table table-sm">
+                <thead><tr><th>Customer</th><th>Orders</th><th>Total Spent</th></tr></thead>
+                <tbody>
+                    {% for row in customer_report %}
+                    <tr><td>{{ row.user__username }}</td><td>{{ row.order_count }}</td><td>${{ row.total_spent }}</td></tr>
+                    {% empty %}
+                    <tr><td colspan="3" class="text-center text-muted">No customer data yet.</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

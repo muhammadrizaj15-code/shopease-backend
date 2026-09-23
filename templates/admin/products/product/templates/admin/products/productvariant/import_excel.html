@@ -1,0 +1,46 @@
+{% extends "admin/base_site.html" %}
+
+{% block content %}
+<div style="max-width:900px;">
+    <h1>Import Product Variants from Excel</h1>
+
+    <p>
+        Excel faylda quyidagi ustunlar bo‘lishi kerak:
+    </p>
+
+    <pre style="background:#f5f5f5;padding:15px;border-radius:6px;">product_name | color | color_code | storage | image_url | price | discount_price | stock | sku | is_active</pre>
+
+    <form method="post" enctype="multipart/form-data" style="margin-top:25px;">
+        {% csrf_token %}
+
+        <input
+            type="file"
+            name="excel_file"
+            accept=".xlsx,.xlsm"
+            required
+            style="margin-bottom:20px;"
+        >
+
+        <br>
+
+        <button type="submit" class="button default">
+            IMPORT EXCEL
+        </button>
+
+        <a href="{% url 'admin:products_productvariant_changelist' %}"
+           class="button"
+           style="margin-left:8px;">
+            CANCEL
+        </a>
+    </form>
+
+    <div style="margin-top:30px;padding:15px;background:#fffbe6;border:1px solid #f0d36a;">
+        <strong>Muhim:</strong>
+        <ul>
+            <li><b>product_name</b> Django Admin'dagi Product nomi bilan aynan mos bo‘lsin.</li>
+            <li>Bir xil <b>product + color + storage</b> qayta import qilinsa yangi variant emas, mavjud variant yangilanadi.</li>
+            <li><b>image_url</b> bo‘sh bo‘lsa rasm o‘zgarmaydi.</li>
+        </ul>
+    </div>
+</div>
+{% endblock %}

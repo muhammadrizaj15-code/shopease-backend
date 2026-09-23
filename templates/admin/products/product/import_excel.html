@@ -1,0 +1,33 @@
+{% extends "admin/base_site.html" %}
+
+{% block content %}
+
+<h1>Excel orqali mahsulot import qilish</h1>
+
+<form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+
+    <p>
+        Excel faylni tanlang:
+    </p>
+
+    <input type="file" name="excel_file" accept=".xlsx,.xlsm" required>
+
+    <br><br>
+
+    <button type="submit" class="button default">
+        Excel Import
+    </button>
+</form>
+
+<br>
+
+<p>
+    Excel ustunlari quyidagi tartibda bo‘lishi kerak:
+</p>
+
+<pre>
+name | category | brand | price | discount_price | description | stock | sku
+</pre>
+
+{% endblock %}

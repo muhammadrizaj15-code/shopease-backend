@@ -1,0 +1,80 @@
+{% extends 'base.html' %}
+{% block title %}My Profile | ShopEase{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <h2 class="section-title">My Profile</h2>
+    <div class="row">
+        <div class="col-lg-3 mb-4">
+            <div class="list-group">
+                <a href="{% url 'accounts:profile' %}" class="list-group-item list-group-item-action active">
+                    <i class="bi bi-person"></i> Edit Profile
+                </a>
+                <a href="{% url 'accounts:change_password' %}" class="list-group-item list-group-item-action">
+                    <i class="bi bi-key"></i> Change Password
+                </a>
+                <a href="{% url 'accounts:order_history' %}" class="list-group-item list-group-item-action">
+                    <i class="bi bi-bag-check"></i> Order History
+                </a>
+            </div>
+        </div>
+
+        <div class="col-lg-9">
+            <div class="border rounded-xl p-4">
+                <form method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <h5 class="fw-bold mb-3">User Information</h5>
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label">First Name</label>
+                            {{ u_form.first_name }}
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Last Name</label>
+                            {{ u_form.last_name }}
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label">Email</label>
+                            {{ u_form.email }}
+                        </div>
+                    </div>
+
+                    <h5 class="fw-bold mt-4 mb-3">Address</h5>
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label">Phone</label>
+                            {{ p_form.phone }}
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Avatar</label>
+                            {{ p_form.avatar }}
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label">Street Address</label>
+                            {{ p_form.address_line }}
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">City</label>
+                            {{ p_form.city }}
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Region</label>
+                            {{ p_form.region }}
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Postal Code</label>
+                            {{ p_form.postal_code }}
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Country</label>
+                            {{ p_form.country }}
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary mt-4"><i class="bi bi-save"></i> Save Changes</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

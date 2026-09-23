@@ -1,0 +1,31 @@
+{% extends 'dashboard/base_dashboard.html' %}
+{% block title %}Manage Brands | ShopEase{% endblock %}
+{% block dashboard_content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="fw-bold mb-0">Brands</h2>
+    <a href="{% url 'dashboard:brand_create' %}" class="btn btn-primary"><i class="bi bi-plus-lg"></i> Add Brand</a>
+</div>
+<div class="border rounded-xl p-3">
+    <div class="table-responsive">
+        <table class="table align-middle">
+            <thead><tr><th>Logo</th><th>Name</th><th>Products</th><th>Status</th><th>Actions</th></tr></thead>
+            <tbody>
+                {% for brand in brands %}
+                <tr>
+                    <td>{% if brand.logo %}<img src="{{ brand.logo.url }}" style="width:40px;height:40px;object-fit:contain;">{% endif %}</td>
+                    <td>{{ brand.name }}</td>
+                    <td>{{ brand.products.count }}</td>
+                    <td>{% if brand.is_active %}<span class="badge bg-success">Active</span>{% else %}<span class="badge bg-secondary">Inactive</span>{% endif %}</td>
+                    <td>
+                        <a href="{% url 'dashboard:brand_update' brand.id %}" class="btn btn-sm btn-outline-primary"><i class="bi bi-pencil"></i></a>
+                        <a href="{% url 'dashboard:brand_delete' brand.id %}" class="btn btn-sm btn-outline-danger"><i class="bi bi-trash"></i></a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr><td colspan="5" class="text-center text-muted">No brands found.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

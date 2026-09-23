@@ -1,0 +1,139 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: ShopEase 1.0\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: uz\n"
+
+msgid "Home"
+msgstr "Bosh sahifa"
+
+msgid "Products"
+msgstr "Mahsulotlar"
+
+msgid "Categories"
+msgstr "Kategoriyalar"
+
+msgid "Admin Dashboard"
+msgstr "Boshqaruv paneli"
+
+msgid "Search products..."
+msgstr "Mahsulot qidirish..."
+
+msgid "My Profile"
+msgstr "Mening profilim"
+
+msgid "My Orders"
+msgstr "Buyurtmalarim"
+
+msgid "Logout"
+msgstr "Chiqish"
+
+msgid "Login"
+msgstr "Kirish"
+
+msgid "Register"
+msgstr "Ro'yxatdan o'tish"
+
+msgid "Shop"
+msgstr "Do'kon"
+
+msgid "Account"
+msgstr "Hisob"
+
+msgid "Contact Us"
+msgstr "Biz bilan bog'laning"
+
+msgid "All rights reserved."
+msgstr "Barcha huquqlar himoyalangan."
+
+msgid "Subscribe to our Newsletter"
+msgstr "Yangiliklarga obuna bo'ling"
+
+msgid "Get the latest deals and new arrivals straight to your inbox."
+msgstr "Eng so'nggi chegirmalar va yangi mahsulotlardan xabardor bo'ling."
+
+msgid "Subscribe"
+msgstr "Obuna bo'lish"
+
+msgid "Shopping Cart"
+msgstr "Savatcha"
+
+msgid "Continue Shopping"
+msgstr "Xaridni davom ettirish"
+
+msgid "Order Summary"
+msgstr "Buyurtma xulosasi"
+
+msgid "Apply"
+msgstr "Qo'llash"
+
+msgid "Remove"
+msgstr "O'chirish"
+
+msgid "Coupon code"
+msgstr "Promo-kod"
+
+msgid "Subtotal"
+msgstr "Oraliq summa"
+
+msgid "Discount"
+msgstr "Chegirma"
+
+msgid "Shipping"
+msgstr "Yetkazib berish"
+
+msgid "Free"
+msgstr "Bepul"
+
+msgid "Tax"
+msgstr "Soliq"
+
+msgid "Grand Total"
+msgstr "Umumiy summa"
+
+msgid "items"
+msgstr "mahsulot"
+
+msgid "Proceed to Checkout"
+msgstr "Buyurtmani rasmiylashtirish"
+
+msgid "Your cart is empty."
+msgstr "Savatchangiz bo'sh."
+
+msgid "Start Shopping"
+msgstr "Xarid qilishni boshlash"
+
+msgid "Add to Cart"
+msgstr "Savatga qo'shish"
+
+msgid "Buy Now"
+msgstr "Hozir sotib olish"
+
+msgid "Out of Stock"
+msgstr "Mavjud emas"
+
+msgid "My Wishlist"
+msgstr "Sevimlilar"
+
+msgid "Your wishlist is empty."
+msgstr "Sevimlilar ro'yxati bo'sh."
+
+msgid "Browse Products"
+msgstr "Mahsulotlarni ko'rish"
+
+msgid "Checkout"
+msgstr "Buyurtmani rasmiylashtirish"
+
+msgid "Place Order"
+msgstr "Buyurtma berish"
+
+msgid "Shipping Information"
+msgstr "Yetkazib berish ma'lumotlari"
+
+msgid "Payment Method"
+msgstr "To'lov usuli"
+
+msgid "Phone"
+msgstr "Telefon"
