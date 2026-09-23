@@ -93,21 +93,21 @@ ASGI_APPLICATION = 'ecommerce_project.asgi.application'
 # DATABASE
 # Default: SQLite (zero-config). Switch to MySQL by setting env vars.
 # =========================================================
-USE_MYSQL = os.environ.get('USE_MYSQL', 'False') == 'True'
+# =========================================================
+# DATABASE
+# =========================================================
 
-if USE_MYSQL:
+DATABASE_URL = os.environ.get('DATABASE_URL')
+
+if DATABASE_URL:
+    import dj_database_url
+
     DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.mysql',
-            'NAME': os.environ.get('MYSQL_DATABASE', 'ecommerce_db'),
-            'USER': os.environ.get('MYSQL_USER', 'root'),
-            'PASSWORD': os.environ.get('MYSQL_PASSWORD', ''),
-            'HOST': os.environ.get('MYSQL_HOST', '127.0.0.1'),
-            'PORT': os.environ.get('MYSQL_PORT', '3306'),
-            'OPTIONS': {
-                'charset': 'utf8mb4',
-            },
-        }
+        'default': dj_database_url.parse(
+            DATABASE_URL,
+            conn_max_age=600,
+            conn_health_checks=True,
+        )
     }
 else:
     DATABASES = {
@@ -116,7 +116,6 @@ else:
             'NAME': BASE_DIR / 'db.sqlite3',
         }
     }
-
 # =========================================================
 # PASSWORD VALIDATION
 # =========================================================
